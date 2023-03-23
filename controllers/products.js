@@ -1,13 +1,28 @@
+const Product = require('../models/product');
 exports.getAddProduct = (req, res, next) => {
-  res.send(
-    '<form action="/admin/add-product" method="POST"><input type="text" name="title"><button type="submit">Add Product</button></form>'
-  );
-}
+  res.render('add-product', {
+    pageTitle: 'Add Product',
+    path: '/admin/add-product',
+    formsCSS: true,
+    productCSS: true,
+    activeAddProduct: true
+  });
+};
 exports.postAddProduct = (req, res, next) => {
-  //store product to database
+  const product = new Product(req.body.title);
+  product.save();
   res.redirect('/');
-}
+};
 
 exports.getAllProducts = (req, res, next) => {
-  //fetch all products from database
-}
+  Product.fetchAll(products => {
+    res.render('shop', {
+      prods: products,
+      pageTitle: 'Shop',
+      path: '/',
+      hasProducts: products.length > 0,
+      activeShop: true,
+      productCSS: true
+    });
+  });
+};
